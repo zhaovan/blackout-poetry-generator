@@ -3,7 +3,9 @@ import styles from "../styles/Home.module.css";
 import { useRef, useState } from "react";
 import parse from "html-react-parser";
 
-const generateRandomNumbers = (max: number, times: number) => {
+import posTagger from "wink-pos-tagger";
+
+const generateRandomNumbers = (max, times) => {
   const randoms = new Set();
   let num;
   while (randoms.size !== times) {
@@ -24,19 +26,18 @@ const generateRandomNumbers = (max: number, times: number) => {
 // not be based off frequencies, instead jsut chooses randomly
 
 export default function Home() {
-  const [percentage, setPercentage] = useState<number>(0.5);
+  const [percentage, setPercentage] = useState(0.5);
 
   const textRef = useRef();
 
-  const [completeBlackoutPoem, setCompleteBlackoutPoem] = useState<string>("");
+  const [completeBlackoutPoem, setCompleteBlackoutPoem] = useState("");
 
   function blackoutPoem() {
-    console.log(textRef);
     const poem = textRef.current.innerText;
-    console.log(poem);
-    // text.match(/\n.*\n|\S+/g)
-    const words: string[] = poem?.match(/\n.*\n|\S+/g);
-    console.log(words);
+
+    // regex to match strings including new line breaks, used as opposed to builtin split
+    // function
+    const words = poem?.match(/\n.*\n|\S+/g);
 
     if (words?.length === 0) {
       return;
@@ -50,7 +51,7 @@ export default function Home() {
     // let poemString = "<p>";
     const newPoem = [];
     for (let i = 0; i < words?.length; i++) {
-      if (randomNumbers.has(i)) {
+      if (!randomNumbers.has(i)) {
         newPoem.push(`<mark>${words[i]}</mark>`);
         // poemString += `<u className={styles.blackoutWord}>${words[i]}</u>`;
       } else {
@@ -60,6 +61,42 @@ export default function Home() {
     }
 
     setCompleteBlackoutPoem(newPoem.join(" "));
+  }
+
+  function markovBlackoutPoem() {
+    const poem = textRef.current.innerText;
+
+    // regex to match strings including new line breaks, used as opposed to builtin split
+    // function
+
+    const tagger = posTagger();
+    const taggedWords = tagger.tagSentence(poem);
+    console.log(taggedWords);
+    const newPoem = [];
+
+    let firstWordChosen = false;
+
+    let currPartOfSpeech;
+
+    for (let tag of taggedWords) {
+      const chooseWord = Math.random();
+
+      // if first word hasn't been chosen yet
+      if (!firstWordChosen) {
+        if (chooseWord < percentage) {
+          newPoem.push(tag.value);
+          currPartOfSpeech = newPoem.push(tag.pos);
+          firstWordChosen = true;
+        } else {
+          newPoem.push(`<mark>${tag.value}</mark>`);
+        }
+      } else {
+        // first word has been chosen
+        // get the probability distribution / state space onto next possible words
+        // see if the current word maps to it, if so, choose with probability in the space
+        // if not, push a blacked out word
+      }
+    }
   }
 
   return (
@@ -73,11 +110,16 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <h1>Blackout poetry generator</h1>
+
+      {/* TODO: Change the default so that it randomly selects from a vairety of poems */}
       <p contentEditable={true} ref={textRef}>
         in the days of yore how do we know that the men we care about, are
         worthy of deceit
       </p>
       <button onClick={() => blackoutPoem()}>give me a poem!</button>
+      <button onClick={() => markovBlackoutPoem()}>
+        give me a "smart" poem
+      </button>
       <p className={styles.blackoutPoem}>{parse(completeBlackoutPoem)}</p>
     </div>
   );

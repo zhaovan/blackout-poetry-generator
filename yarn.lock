@@ -514,7 +514,7 @@ domutils@^3.0.1:
     domelementtype "^2.3.0"
     domhandler "^5.0.1"
 
-emoji-regex@^9.2.2:
+emoji-regex@^9.0.0, emoji-regex@^9.2.2:
   version "9.2.2"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-9.2.2.tgz#840c8803b0d8047f4ff0cf963176b32d4ef3ed72"
   integrity sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==
@@ -1826,6 +1826,47 @@ which@^2.0.1:
   integrity sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==
   dependencies:
     isexe "^2.0.0"
+
+wink-helpers@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/wink-helpers/-/wink-helpers-2.0.0.tgz#0aec1a2bddd0adcf9e6deb3bf7fa70c7e92dbe5c"
+  integrity sha512-I/ZzXrHcNRXuoeFJmp2vMVqDI6UCK02Tds1WP4kSGAmx520gjL1BObVzF7d2ps24tyHIly9ngdB2jwhlFUjPvg==
+
+wink-lemmatizer@^3.0.1:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/wink-lemmatizer/-/wink-lemmatizer-3.0.2.tgz#344f4a2f4966aada1e6670985f1ca2194d8a0ead"
+  integrity sha512-0G572wdcujnRfpjSKs2lDXjA2+8APzkQu+gsREzzOjqg39C1ACE912veMwx2onlbYfUifsZRVaLZUOXjsHFVzA==
+  dependencies:
+    wink-lexicon "^2.1.2"
+    wink-porter2-stemmer "^2.0.0"
+
+wink-lexicon@^2.1.1, wink-lexicon@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/wink-lexicon/-/wink-lexicon-2.1.2.tgz#6cbbb7662259993972e137271fdf477caf3c84e8"
+  integrity sha512-LUIVIKNIURMHN38leZXWP+ZE0b1jWUdGDHfgV6kmPSHy2AqwHS/n8xGADRsfJxJamLb6BwQY713/w2XnWYk/HQ==
+
+wink-porter2-stemmer@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/wink-porter2-stemmer/-/wink-porter2-stemmer-2.0.1.tgz#f7680e584e2b9b4c44766642325671662e98f44a"
+  integrity sha512-0g+RkkqhRXFmSpJQStVXW5N/WsshWpJXsoDRW7DwVkGI2uDT6IBCoq3xdH5p6IHLaC6ygk7RWUsUx4alKxoagQ==
+
+wink-pos-tagger@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/wink-pos-tagger/-/wink-pos-tagger-2.2.2.tgz#bde4079ccf50a7967ce1548c9d4ec15435b24d7a"
+  integrity sha512-+bhkwqwwChqWR75ksFKVJZQagwu404UmnvFjxr+OWZ02/ZJAv19N/iqDpMeYRQRxatk5N+W9pXIKEDJsVrzGyw==
+  dependencies:
+    wink-helpers "^2.0.0"
+    wink-lemmatizer "^3.0.1"
+    wink-lexicon "^2.1.1"
+    wink-porter2-stemmer "^2.0.0"
+    wink-tokenizer "^5.2.1"
+
+wink-tokenizer@^5.2.1:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/wink-tokenizer/-/wink-tokenizer-5.3.0.tgz#2af267ecddb794ef39344d700d92609f053eebaa"
+  integrity sha512-O/yAw0g3FmSgeeQuYAJJfP7fVPB4A6ay0018qASh79aWmIOyPYy4j4r9EQT8xBjicja6lCLvgRVAybmEBaATQA==
+  dependencies:
+    emoji-regex "^9.0.0"
 
 word-wrap@^1.2.3:
   version "1.2.3"
