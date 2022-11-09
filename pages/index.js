@@ -145,7 +145,7 @@ export default function Home() {
         randomly generate a blackout poem
       </button>
       <button onClick={() => blackoutPoem("markov")}>
-        "smartly" generate a blackout poem
+        smartly generate a blackout poem
       </button>
       <p className={styles.blackoutPoem}>{parse(completeBlackoutPoem)}</p>
     </div>
