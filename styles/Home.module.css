@@ -1,9 +1,13 @@
 .container {
-  width: 60%;
+  width: 40%;
   margin: auto;
   margin-top: 5%;
 }
 
 .blackoutPoem {
   white-space: pre-line;
+}
+
+.sliderContainer {
+  width: 20%;
 }
