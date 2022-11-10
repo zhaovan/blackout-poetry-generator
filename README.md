@@ -2,14 +2,21 @@
 
 This work was inspired by [this project](https://mkremins.github.io/blackout/) which black outs entire web pages. Specifically, I want to do two things to work on this
 
-1. The first is to have it randomly generate a poem based on parameters passed by the user. Currently it's set at 50% because I literally did this in two hours and need a nap
+1. The first is to have it randomly generate a poem naively.
+2. The second is to uses a trained markov chain on parts of speech to "more intuitively" figure out if a word should be used or not.
 
-2. The second is to use some kind of markov chain of probabilities to choose the next word. This will probably be done with some classification model on type of word. This part is not yet implemented because I am going to sleep but I'm writing down thoughts for future ivan to work on
+## Implementation
+
+If you're curious about the implementation, it uses a corpus taken from [Professor Parrish's work](https://github.com/aparrish/gutenberg-poetry-corpus) which is three million lines of poem. Each line is tagged by a parts of speech tagger (that I graciously used from the OS community because writing that seems outside my wheelhouse) and then creates a transition matrix (basic idea of a [Markov model](https://en.wikipedia.org/wiki/Markov_model)) to determine all possible words that could follow. From there, it's saved as a JSON which is then used on the frontend to determine if a word should be included! Not too bad and not too shabby for something that's not GPT3 lol.
+
+Code for this can be found in `scripts/getWeights.js`
 
 <!-- Important docs -->
 
+## Updates to myself... you can read this if you want
+
 11/7/22 Updates
-As of now, markov process seems logical, going to get corpus from [Professor Parish](https://www.decontextualize.com/) which will be run on to get the weights of a markov model to be used in creating our poetry blackout generator. will it work?? who knows. more notes in comments, but plan on running this through a parts of speech text tagger and then creating a probability distribution of weights
+As of now, markov process seems logical, going to get corpus from [Professor Parrish](https://www.decontextualize.com/) which will be run on to get the weights of a markov model to be used in creating our poetry blackout generator. will it work?? who knows. more notes in comments, but plan on running this through a parts of speech text tagger and then creating a probability distribution of weights
 
 ## Annotation Specification
 
