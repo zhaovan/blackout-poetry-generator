@@ -139,7 +139,7 @@ export default function Home() {
       <p>
         Welcome friend! Ever wanted to make blackout poetry? Well now you can!
         Drop your poem in the text box below, hit generate, and see what you
-        get! Here's some examples to get you going, but nothings better than
+        get! Here's some examples to get you going, but nothing's better than
         something that comes from your brain.
       </p>
 
