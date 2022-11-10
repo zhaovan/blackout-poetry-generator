@@ -133,6 +133,17 @@ export default function Home() {
           content="Make your own blackout poems with this nifty tool"
         />
         <link rel="icon" href="/poemlogo.png" />
+        <meta property="og:image" content="/og-img.png" />
+        <meta property="og:title" content="Blackout Poetry Generator" />
+
+        <meta
+          property="og:description"
+          content="Make your own blackout poems with this nifty tool"
+        />
+
+        <meta property="og:image:width" content="1200" />
+
+        <meta property="og:image:height" content="600" />
       </Head>
 
       <h1>Blackout Poetry Generator</h1>
