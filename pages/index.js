@@ -144,6 +144,7 @@ export default function Home() {
         <meta property="og:image:width" content="1200" />
 
         <meta property="og:image:height" content="600" />
+        <meta name="twitter:card" content="summar_large_image" />
       </Head>
 
       <h1>Blackout Poetry Generator</h1>
