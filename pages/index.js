@@ -132,7 +132,7 @@ export default function Home() {
           name="description"
           content="Make your own blackout poems with this nifty tool"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/poemlogo.png" />
       </Head>
 
       <h1>Blackout Poetry Generator</h1>
