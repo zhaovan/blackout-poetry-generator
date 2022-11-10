@@ -135,6 +135,7 @@ export default function Home() {
         <link rel="icon" href="/poemlogo.png" />
         <meta property="og:image" content="/og-img.png" />
         <meta property="og:title" content="Blackout Poetry Generator" />
+        <meta property="og:type" content="website" />
 
         <meta
           property="og:description"
