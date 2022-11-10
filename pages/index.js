@@ -1,14 +1,23 @@
+/* eslint-disable react/no-unescaped-entities */
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
 import { useRef, useState } from "react";
-import TextInput from "./TextInput";
 import parse from "html-react-parser";
-import weights from "../scripts/data/weights.json";
 import posTagger from "wink-pos-tagger";
 import Slider from "rc-slider";
+
+// CSS Imports
+import styles from "../styles/Home.module.css";
 import "rc-slider/assets/index.css";
 
+// Components
+import TextInput from "../components/TextInput";
+
+// functions
 import generateRandomNumbers from "../helpers/generateRandomNumbers";
+
+// weights used for model
+import weights from "../scripts/data/weights.json";
+import countWeights from "../scripts/data/weights-count.json";
 
 // Currently supports randomly generated
 
@@ -19,23 +28,25 @@ import generateRandomNumbers from "../helpers/generateRandomNumbers";
 
 export default function Home() {
   const [percentage, setPercentage] = useState(0.5);
-
+  const [completeBlackoutPoem, setCompleteBlackoutPoem] = useState("");
+  const [type, setType] = useState("");
+  const [error, setError] = useState(false);
+  const [startingWord, setStartingWord] = useState("");
   const textRef = useRef();
 
-  const [completeBlackoutPoem, setCompleteBlackoutPoem] = useState("");
-
-  function blackoutPoem(type) {
-    const poem = textRef.current.innerText;
-
-    if (poem.length === 0) {
-      return;
-    }
+  function blackoutPoem() {
+    const poem = textRef.current.innerHTML;
 
     // regex to match strings including new line breaks, used as opposed to builtin split
     // function
-    const words = poem?.match(/\n.*\n|\S+/g);
+    const words = poem?.match(/\n.*\n|\S+|/g).filter((word) => word !== "");
 
-    if (words?.length === 0) {
+    if (poem.length === 0 || words?.length === 0) {
+      setCompleteBlackoutPoem("");
+      setError(true);
+      setTimeout(() => {
+        setError(false);
+      }, 1000);
       return;
     }
 
@@ -63,6 +74,12 @@ export default function Home() {
       const tagger = posTagger();
       const taggedWords = tagger.tagRawTokens(words);
 
+      // finds all the POS in the poem
+      const posInPoem = new Set();
+      for (const word of taggedWords) {
+        posInPoem.add(word.pos);
+      }
+
       let currPartOfSpeech = null;
 
       for (let tag of taggedWords) {
@@ -70,7 +87,7 @@ export default function Home() {
 
         // if first word hasn't been chosen yet
         if (currPartOfSpeech === null) {
-          if (chooseWord < percentage) {
+          if (tag.value.toLowerCase() === startingWord.toLowerCase()) {
             newPoem.push(tag.value);
             currPartOfSpeech = tag.pos;
           } else {
@@ -81,10 +98,19 @@ export default function Home() {
           // get the probability distribution / state space onto next possible words
           // see if the current word maps to it, if so, choose with probability in the space
           // if not, push a blacked out word
+          const currTransitionMatrix = { ...countWeights[currPartOfSpeech] };
+
+          let totalCount = 0;
+          for (const pos of posInPoem) {
+            totalCount += currTransitionMatrix[pos];
+          }
+          for (const pos of posInPoem) {
+            currTransitionMatrix[pos] /= totalCount;
+          }
 
           if (
-            tag.pos in weights[currPartOfSpeech] &&
-            chooseWord < weights[currPartOfSpeech][tag.pos]
+            tag.pos in currTransitionMatrix &&
+            chooseWord < currTransitionMatrix[tag.pos]
           ) {
             // word has been chosen
             newPoem.push(tag.value);
@@ -95,7 +121,6 @@ export default function Home() {
         }
       }
     }
-
     setCompleteBlackoutPoem(newPoem.join(" "));
   }
 
@@ -112,42 +137,96 @@ export default function Home() {
 
       <h1>Blackout Poetry Generator</h1>
       <p>
-        Welcome friend! Ever wanted to make blackout poetry? Well now you can,
-        with terrible randomness! This is a small project created by{" "}
-        <a href="https://ivanzhao.me" target={"_blank"} rel="noreferrer">
-          corgo
-        </a>{" "}
-        in his interest of building tools and computational poetry. Drop your
-        poem in the text box below, hit generate, and see what you get!
+        Welcome friend! Ever wanted to make blackout poetry? Well now you can!
+        Drop your poem in the text box below, hit generate, and see what you
+        get! Here's some examples to get you going, but nothings better than
+        something that comes from your brain.
       </p>
-      {/* TODO: Change the default so that it randomly selects from a vairety of poems */}
-      <TextInput textRef={textRef} />
-      <div className={styles.sliderContainer}>
-        <Slider
-          tipProps
-          defaultValue={percentage * 100}
-          step={10}
-          onChange={(val) => {
-            setPercentage(val / 100);
-            blackoutPoem("random");
-          }}
-          handleRender={(renderProps) => {
-            return (
-              <div {...renderProps.props}>
-                <div>{Math.round(percentage * 100)}%</div>
-              </div>
-            );
-          }}
-        />
-      </div>
 
-      <button onClick={() => blackoutPoem("random")}>
-        randomly generate a blackout poem
-      </button>
-      <button onClick={() => blackoutPoem("markov")}>
-        smartly generate a blackout poem
-      </button>
-      <p className={styles.blackoutPoem}>{parse(completeBlackoutPoem)}</p>
+      <TextInput textRef={textRef} error={error} />
+
+      <div
+        onChange={(e) => setType(e.target.value)}
+        className={styles.buttonContainer}
+      >
+        <label>
+          <input type="radio" name="type" value="random" />
+          Random
+        </label>
+
+        <label>
+          <input type="radio" name="type" value="markov" />
+          Smart
+        </label>
+        <details className={styles.info}>
+          <summary>what does "smart" mean</summary>
+          <p className={styles.infoText}>
+            I'm so glad you asked old chap! Your poem is tagged with parts of
+            speech classifier. From there, each word is treated as a possible
+            state space for a Markov model trained on three million lines of
+            poetry. For more info, go check out the{" "}
+            <a
+              href="https://github.com/zhaovan/blackout-poetry-generator"
+              target="_blank"
+              rel="noreferrer"
+            >
+              README
+            </a>{" "}
+            on the github page!
+          </p>
+        </details>
+      </div>
+      {type !== "" && (
+        <>
+          {type === "random" ? (
+            <>
+              <p>Set the percentage of poem to keep</p>
+              <div className={styles.sliderContainer}>
+                <Slider
+                  tipProps
+                  defaultValue={percentage * 100}
+                  onChange={(val) => {
+                    setPercentage(val / 100);
+                  }}
+                  handleRender={(renderProps) => {
+                    return (
+                      <div {...renderProps.props}>
+                        <div className={styles.tooltip}>
+                          {Math.round(percentage * 100)}%
+                        </div>
+                      </div>
+                    );
+                  }}
+                />
+              </div>
+            </>
+          ) : (
+            <div>
+              <p>Choose your starting word</p>
+              <input
+                type="text"
+                onChange={(e) => setStartingWord(e.target.value)}
+                className={styles.startingWordTextbox}
+              ></input>
+            </div>
+          )}
+
+          <button onClick={() => blackoutPoem()} className={styles.button}>
+            Generate
+          </button>
+        </>
+      )}
+
+      {completeBlackoutPoem && (
+        <p className={styles.blackoutPoem}>{parse(completeBlackoutPoem)}</p>
+      )}
+      <footer>
+        This is a small project created by{" "}
+        <a href="https://ivanzhao.me" target={"_blank"} rel="noreferrer">
+          ivan
+        </a>{" "}
+        in his interest of building tools for creativity.
+      </footer>
     </div>
   );
 }

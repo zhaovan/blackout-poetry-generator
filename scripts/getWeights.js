@@ -7,7 +7,10 @@ const weights = {};
 let lastGID = 0;
 let prevWordPOS = null;
 
-function getWeights(filePath) {
+// file path is a string
+// wantCount is a boolean that outputs the wieghts in eprcentages if false and total counts if true
+
+function getWeights(filePath, wantCount) {
   const tagger = postTagger();
   fs.createReadStream(filePath)
     .pipe(ndjson.parse())
@@ -45,23 +48,21 @@ function getWeights(filePath) {
       }
     })
     .on("end", () => {
-      console.log(weights);
-      for (const [pos, transitionMatrix] of Object.entries(weights)) {
-        const totalWords = Object.values(transitionMatrix).reduce(
-          (partialSum, a) => partialSum + a,
-          0
-        );
-        for (const key of Object.keys(transitionMatrix)) {
-          transitionMatrix[key] /= totalWords;
+      if (wantCount) {
+        fs.writeFileSync("./data/weights-count.json", JSON.stringify(weights));
+      } else {
+        for (const [pos, transitionMatrix] of Object.entries(weights)) {
+          const totalWords = Object.values(transitionMatrix).reduce(
+            (partialSum, a) => partialSum + a,
+            0
+          );
+          for (const key of Object.keys(transitionMatrix)) {
+            transitionMatrix[key] /= totalWords;
+          }
         }
+        fs.writeFileSync("./data/weights.json", JSON.stringify(weights));
       }
-      fs.writeFileSync("./data/weights.json", JSON.stringify(weights));
-      console.log(weights);
     });
 }
 
-getWeights("./data/corpus.ndjson");
-// getWeights("./data/small-corpus.ndjson");
-// Now that we have the weights, we want to calculate probability distributions in each case
-
-// console.log(weights);
+getWeights("./data/corpus.ndjson", true);

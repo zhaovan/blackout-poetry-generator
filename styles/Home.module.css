@@ -2,12 +2,61 @@
   width: 40%;
   margin: auto;
   margin-top: 5%;
+  margin-bottom: 5%;
 }
 
 .blackoutPoem {
   white-space: pre-line;
+  border: 1px solid black;
+  background-color: #ffffed;
+  padding: 2%;
+  margin-top: 2vh;
 }
 
 .sliderContainer {
   width: 20%;
+  margin-bottom: 2rem;
+}
+
+/* .buttonContainer {
+  margin-bottom: 1rem;
+} */
+
+.tooltip {
+  position: relative;
+  left: -6px;
+  top: 15px;
+}
+
+.button {
+  background-color: lightblue;
+  border: none;
+  width: 96px;
+  text-align: center;
+  height: 24px;
+  border-radius: 4px;
+}
+
+.button:hover {
+  opacity: 0.7;
+  transition-timing-function: ease-in-out;
+}
+
+.startingWordTextbox {
+  margin-bottom: 1vh;
+}
+
+.image {
+  margin-left: 5px;
+}
+
+.info {
+  position: relative;
+  top: -2vh;
+  left: 45vw;
+  width: 20vw;
+}
+
+.infoText {
+  position: absolute;
 }

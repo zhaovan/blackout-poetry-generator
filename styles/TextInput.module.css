@@ -1,4 +1,29 @@
 .textContainer {
   border: 1px dotted black;
   padding: 2%;
+  white-space: pre-line;
+}
+
+.textContainerAnimated {
+  border: 1px dotted red;
+  padding: 2%;
+  animation: wobble-back-and-forth 1s linear;
+}
+
+@keyframes wobble-back-and-forth {
+  0% {
+    transform: translateX(-20px);
+  }
+  20% {
+    transform: translateX(20px);
+  }
+  40% {
+    transform: translateX(-10px);
+  }
+  70% {
+    transform: translateX(10px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
 }
